@@ -20,6 +20,7 @@ Blogify is a Django-based web application that blends AI creativity with a polis
 - **Post Management**: View, create, and publish posts with SEO-friendly keyword integration, stored in a Django SQLite database (`Post` model).  
 - **Sidebar**: Dynamic "Latest Posts" widget pulls recent posts with clickable titles—pure Django template logic.  
 - **Session Persistence**: Drafts and inputs stay alive across requests using Django’s session framework—no data loss mid-process!
+- **Auto-Schedule**: The superuser has the access to the 'Auto-Schedule' Feature that helps them to schedule what blogs will be posted at what date and time, the predefined keywords and topics help to generate blogs automatically as scheduled.
 
 ### AI-Powered Blog Generation
 - **Four-Prompt Flow**:  
