@@ -79,7 +79,7 @@ def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
 
 
-genai.configure(api_key="AIzaSyDnQKVzA9vipdW_Idy3YJRmov95gCONsoM")
+genai.configure(api_key="your_own_api_key")
 class GenerateBlogView(LoginRequiredMixin, View):
     template_name = 'blog/generate.html'
 
