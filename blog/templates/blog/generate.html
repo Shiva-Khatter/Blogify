@@ -1,0 +1,91 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+    <h2>Generate a Blog Post with AI</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="topic">Topic:</label>
+            <input type="text" name="topic" class="form-control" value="{{ topic|default:'' }}" required placeholder="e.g., Introduction to Django">
+        </div>
+        <div class="form-group">
+            <label for="primary_keyword">Primary Keyword:</label>
+            <input type="text" name="primary_keyword" class="form-control" value="{{ primary_keyword|default:'' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="additional_keywords">Additional Keywords (comma-separated):</label>
+            <input type="text" name="additional_keywords" class="form-control" value="{{ additional_keywords|default:'' }}" required placeholder="e.g., keyword1, keyword2, keyword3">
+        </div>
+
+        <!-- Prompt 1 -->
+        <div class="form-group">
+            <label for="prompt_1">Prompt 1 (Initial Draft):</label>
+            <textarea name="prompt_1" class="form-control" {% if drafts %}readonly{% else %}required{% endif %} placeholder="e.g., Write a 500-word article about...">{{ prompt_1|default:'' }}</textarea>
+        </div>
+        {% if not drafts %}
+            <button type="submit" name="action" value="generate" class="btn btn-custom-brown">Generate Draft</button>
+        {% endif %}
+
+        <!-- Draft Progress -->
+        {% if drafts %}
+            <div class="content-section mt-4">
+                <h3>Draft Progress</h3>
+                {% for draft in drafts %}
+                    <div class="card mb-3" style="border-color: #8b5e3b;">
+                        <div class="card-header" style="background-color: #8b5e3b; color: #ffffff;">
+                            Prompt: {{ draft.prompt }}
+                        </div>
+                        <div class="card-body">
+                            <p>{{ draft.content }}</p>
+                            <small class="text-muted">Length: {{ draft.content|wordcount }} words</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Prompt 2 -->
+            {% if drafts|length == 1 %}
+                <div class="form-group">
+                    <label for="prompt_2">Prompt 2 (Refine Draft):</label>
+                    <textarea name="prompt_2" class="form-control" placeholder="e.g., Make it more engaging and add examples">{{ prompt_2|default:'' }}</textarea>
+                </div>
+                <button type="submit" name="action" value="refine_2" class="btn btn-warning">Refine with Prompt 2</button>
+            {% endif %}
+
+            <!-- Prompt 3 -->
+            {% if drafts|length == 2 %}
+                <div class="form-group">
+                    <label for="prompt_3">Prompt 3 (Further Refine):</label>
+                    <textarea name="prompt_3" class="form-control" placeholder="e.g., Improve clarity and structure">{{ prompt_3|default:'' }}</textarea>
+                </div>
+                <button type="submit" name="action" value="refine_3" class="btn btn-warning">Refine with Prompt 3</button>
+            {% endif %}
+
+            <!-- Prompt 4 -->
+            {% if drafts|length == 3 %}
+                <div class="form-group">
+                    <label for="prompt_4">Prompt 4 (Final Draft):</label>
+                    <textarea name="prompt_4" class="form-control" placeholder="e.g., Polish the tone and finalize">{{ prompt_4|default:'' }}</textarea>
+                </div>
+                <button type="submit" name="action" value="refine_4" class="btn btn-warning">Refine with Prompt 4</button>
+            {% endif %}
+
+            <!-- Grammar Zap and Publish -->
+            {% if drafts|length >= 4 %}
+                {% if drafts|length == 4 %}
+                    <button type="submit" name="action" value="check_grammar" class="btn btn-info mt-3" data-toggle="tooltip" data-placement="top" title="Checks grammar using LanguageTool API">AI Grammar Zap</button>
+                {% endif %}
+                <button type="submit" name="action" value="publish" class="btn btn-success mt-3 ml-2">Publish Final Draft</button>
+                {% if grammar_checked %}
+                    <div class="mt-3">
+                        <h4>Grammar Check Results</h4>
+                        <p>{{ grammar_result|default:"No issues found or fixes applied" }}</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        {% if error %}
+            <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
+    </form>
+{% endblock %}

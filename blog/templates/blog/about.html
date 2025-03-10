@@ -1,0 +1,65 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+    <div class="content-section" style="background-color: #f5efe3; border-color: #8b5e3b;">
+        <h1 class="text-center" style="color: #8b5e3b;">About This Blog</h1>
+        <hr style="border-top: 2px solid #c9b29a; width: 50%; margin: 20px auto;">
+        <p class="lead text-muted text-center">
+            A Django-powered blog blending manual and AI-generated content.
+        </p>
+
+        <!-- Project Overview -->
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="card" style="border-color: #c9b29a;">
+                    <div class="card-header" style="background-color: #8b5e3b; color: #ffffff;">
+                        <h3 class="mb-0">Project Overview</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            This is a full-stack web application built with Django, showcasing my skills in Python, web development, and AI integration. It’s a personal blog creation platform where users can create posts manually or generate them using Google’s Gemini API. I designed it to learn Django and to experiment with AI APIs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="card" style="border-color: #c9b29a;">
+                    <div class="card-header" style="background-color: #8b5e3b; color: #ffffff;">
+                        <h3 class="mb-0">Key Features</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">User authentication (login, register, logout)</li>
+                            <li class="list-group-item">Manual blog post creation, editing, and deletion</li>
+                            <li class="list-group-item">AI-generated blog posts with SEO optimization</li>
+                            <li class="list-group-item">Dynamic sidebar with latest posts</li>
+                            <li class="list-group-item">Pagination and responsive design with Bootstrap</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card" style="border-color: #c9b29a;">
+                    <div class="card-header" style="background-color: #8b5e3b; color: #ffffff;">
+                        <h3 class="mb-0">Tech Stack</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Backend:</strong> Django (Python), SQLite</li>
+                            <li class="list-group-item"><strong>Frontend:</strong> Bootstrap 4, Custom CSS</li>
+                            <li class="list-group-item"><strong>AI:</strong> Google Gemini API</li>
+                            <li class="list-group-item"><strong>Tools:</strong> Git, VS Code</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
