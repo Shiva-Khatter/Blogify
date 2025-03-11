@@ -19,7 +19,7 @@ def process_scheduled_posts():
     )
     for sp in scheduled_posts:
         logger.info(f"Processing scheduled post: {sp.topic}")
-        # Generate content directly
+        # Generating content directly
         prompt = (
             f"Write a 500-word blog post on '{sp.topic}'. Ensure the article uses the primary keyword '{sp.primary_keyword}' "
             f"5-10 times (1-2% density) for SEO. Include additional keywords '{sp.additional_keywords}' naturally."
@@ -33,7 +33,7 @@ def process_scheduled_posts():
             logger.error(f"Failed to generate content for {sp.topic}: {str(e)}")
             continue
 
-        # Extract title from content (like in publish action)
+        # Extracting the title from content (like in the publish action)
         lines = content.split('\n')
         title = sp.topic  # Default to topic
         for line in lines:
@@ -41,17 +41,17 @@ def process_scheduled_posts():
                 title = line.strip().replace('#', '').strip()
                 break
 
-        # Create and publish the Post
+        # Creating and publishing the Post
         post = Post(
             title=title,
             content=content,
             author=sp.created_by,
             seo_keywords=f"{sp.primary_keyword}, {sp.additional_keywords}",
-            is_draft=False  # Published directly
+            is_draft=False  # Post Published directly
         )
         post.save()
         logger.info(f"Published post: {title}")
 
-        # Delete the ScheduledPost
+        # Deleting the ScheduledPost
         sp.delete()
         logger.info(f"Deleted scheduled post: {sp.topic}")
