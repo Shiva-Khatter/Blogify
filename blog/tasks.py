@@ -8,7 +8,7 @@ from celery.utils.log import get_task_logger
 django.setup()
 logger = get_task_logger(__name__)
 
-genai.configure(api_key="AIzaSyDnQKVzA9vipdW_Idy3YJRmov95gCONsoM")  # Same key as in views.py
+genai.configure(api_key="your_own_api_key")  # Same key as in views.py
 
 @shared_task
 def process_scheduled_posts():
