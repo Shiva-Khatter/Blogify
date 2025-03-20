@@ -1,0 +1,89 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="content-section">
+        <h2>BlogCraft Generator</h2>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="topic">Topic</label>
+                <input type="text" class="form-control" id="topic" name="topic" value="{{ topic }}" placeholder="Enter your topic">
+            </div>
+            <div class="form-group">
+                <label for="primary_keyword">Primary Keyword</label>
+                <input type="text" class="form-control" id="primary_keyword" name="primary_keyword" value="{{ primary_keyword }}" placeholder="Enter one primary keyword">
+            </div>
+            <div class="form-group">
+                <label for="additional_keywords">Additional Keywords (comma-separated)</label>
+                <input type="text" class="form-control" id="additional_keywords" name="additional_keywords" value="{{ additional_keywords }}" placeholder="e.g., keyword1, keyword2">
+            </div>
+            <div class="form-group">
+                <label for="prompt_1">Prompt 1</label>
+                <textarea class="form-control" id="prompt_1" name="prompt_1" rows="2" placeholder="e.g., Write a blog on the topic">{{ prompt_1 }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="prompt_2">Prompt 2</label>
+                <textarea class="form-control" id="prompt_2" name="prompt_2" rows="2" placeholder="e.g., Add more details">{{ prompt_2 }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="prompt_3">Prompt 3</label>
+                <textarea class="form-control" id="prompt_3" name="prompt_3" rows="2" placeholder="e.g., Include examples">{{ prompt_3 }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="prompt_4">Prompt 4</label>
+                <textarea class="form-control" id="prompt_4" name="prompt_4" rows="2" placeholder="e.g., Refine tone">{{ prompt_4 }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="prompt_5">Prompt 5</label>
+                <textarea class="form-control" id="prompt_5" name="prompt_5" rows="2" placeholder="e.g., Final polish">{{ prompt_5 }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-custom-brown" name="action" value="generate">Generate</button>
+        </form>
+
+        {% if drafts %}
+            <h3>Generated Blog Content</h3>
+            <div class="content-section mb-3">
+                <h4>Current Draft (Refined up to Prompt {{ current_refine_step|add:"-1" }})</h4>
+                <p>{{ drafts.0.content }}</p>
+                {% if grammar_checked %}
+                    <p><strong>Grammar Check Result:</strong> {{ grammar_result }}</p>
+                {% endif %}
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="topic" value="{{ topic }}">
+                <input type="hidden" name="primary_keyword" value="{{ primary_keyword }}">
+                <input type="hidden" name="additional_keywords" value="{{ additional_keywords }}">
+                <input type="hidden" name="prompt_1" value="{{ prompt_1 }}">
+                <input type="hidden" name="prompt_2" value="{{ prompt_2 }}">
+                <input type="hidden" name="prompt_3" value="{{ prompt_3 }}">
+                <input type="hidden" name="prompt_4" value="{{ prompt_4 }}">
+                <input type="hidden" name="prompt_5" value="{{ prompt_5 }}">
+                <div class="form-group">
+                    <label for="feedback">Additional Feedback (Optional)</label>
+                    <textarea class="form-control" id="feedback" name="feedback" rows="2" placeholder="e.g., Make it more engaging"></textarea>
+                </div>
+                {% if current_refine_step <= 5 and not drafts.0.content|slice:":5" == "Error" %}
+                    <button type="submit" class="btn btn-custom-brown mr-2" name="action" value="refine">Refine with Prompt {{ current_refine_step }}</button>
+                {% endif %}
+                {% if current_refine_step > 5 and not drafts.0.content|slice:":5" == "Error" %}
+                    {% if not grammar_checked %}
+                        <button type="submit" class="btn btn-custom-brown mr-2" name="action" value="check_grammar">Check Grammar</button>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="publish_date">Schedule Publish Date and Time</label>
+                        <input type="datetime-local" class="form-control" id="publish_date" name="publish_date" required>
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-custom-brown" name="action" value="publish">Schedule and Publish</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
