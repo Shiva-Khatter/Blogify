@@ -2,11 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 import requests 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, ScheduledPost
 from django import forms 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 import google.generativeai as genai
-
+from decouple import config
 
 def home(request):
     context = {
@@ -41,7 +41,6 @@ class UserPostListView(ListView):
 class PostDetailView(DetailView):
     model = Post
     
-   
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content']
@@ -73,19 +72,18 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):  # mi
         if self.request.user==post.author:
             return True
         return False  
-      
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
 
 
-genai.configure(api_key="your_own_api_key")
+genai.configure(api_key=config('GEMINI_API_KEY'))
 class GenerateBlogView(LoginRequiredMixin, View):
     template_name = 'blog/generate.html'
 
     def get(self, request):
         drafts = request.session.get('drafts', [])
-        # Get URL parameters if present, otherwise fall back to session
+        # Getting URL parameters if present, otherwise fall back to session
         topic = request.GET.get('topic', request.session.get('topic', ''))
         primary_keyword = request.GET.get('primary_keyword', request.session.get('primary_keyword', ''))
         additional_keywords = request.GET.get('additional_keywords', request.session.get('additional_keywords', ''))
@@ -128,7 +126,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
             request.session['additional_keywords'] = additional_keywords
             request.session['prompt_1'] = prompt_1
             request.session.modified = True
-   
+
         elif action == 'refine_2':
             if not drafts:
                 return render(request, self.template_name, {
@@ -139,6 +137,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
                     'drafts': drafts,
                     'error': 'No draft to refine. Please generate a draft first.'
                 })
+                
             if not prompt_2:
                 return render(request, self.template_name, {
                     'topic': topic,
@@ -157,6 +156,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
             request.session['drafts'] = drafts
             request.session['prompt_2'] = prompt_2
             request.session.modified = True
+            
 
         elif action == 'refine_3':
             if not drafts or len(drafts) < 2:
@@ -169,6 +169,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
                     'drafts': drafts,
                     'error': 'Complete Prompt 2 first.'
                 })
+                
             if not prompt_3:
                 return render(request, self.template_name, {
                     'topic': topic,
@@ -188,6 +189,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
             request.session['drafts'] = drafts
             request.session['prompt_3'] = prompt_3
             request.session.modified = True
+
 
         elif action == 'refine_4':
             if not drafts or len(drafts) < 3:
@@ -213,7 +215,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
                     'error': 'Please provide feedback in Prompt 4.'
                 }) 
             prev_draft = drafts[-1]['content']
-            prompt = f"Refine this 500-word article: '{prev_draft}' based on feedback: '{prompt_4}'. Maintain keyword density and length."
+            prompt = f"Refine this 500-word article: '{prev_draft}' based on feedback: '{prompt_4}'. Maintain the same keyword density and word length untill explicitly mentioned by the user."
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt)
             draft_4 = response.text
@@ -221,7 +223,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
             request.session['drafts'] = drafts
             request.session['prompt_4'] = prompt_4
             request.session.modified = True
-
+        
         elif action == 'check_grammar':
             if not drafts or len(drafts) < 4:
                 return render(request, self.template_name, {
@@ -296,7 +298,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
                     'error': 'Complete all prompts up to Prompt 4 before publishing.'
                 })
                 
-            final_draft = drafts[-1]['content']  # Using Draft 5 if exists, else Draft 4
+            final_draft = drafts[-1]['content']  # Using Draft 5 if exists, else Draft 4 will be the final draft 
             lines = final_draft.split('\n')
             generated_title = topic
             for line in lines:
@@ -311,6 +313,12 @@ class GenerateBlogView(LoginRequiredMixin, View):
                 is_draft=False
             )
             post.save()
+            # Delete the matching ScheduledPost if incase it exists
+            ScheduledPost.objects.filter(
+                topic=topic,
+                primary_keyword=primary_keyword,
+                additional_keywords=additional_keywords
+            ).delete()
             request.session['drafts'] = []
             request.session['topic'] = ''
             request.session['primary_keyword'] = ''
@@ -337,6 +345,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
             'grammar_checked': request.session.get('grammar_checked', False),
             'grammar_result': request.session.get('grammar_result', ''),
         })
+
 def sidebar_context(request):
     return {
         'latest_posts': Post.objects.all().order_by('-date_posted')[:5]
@@ -344,7 +353,6 @@ def sidebar_context(request):
 # sidebar_context is crucial since we want it to show up on every single page on our website 
 
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import ScheduledPost
 
 class ScheduledPostForm(forms.ModelForm):
     class Meta:
@@ -369,8 +377,15 @@ def auto_schedule(request):
     else:
         form = ScheduledPostForm()
     
-    scheduled_posts = ScheduledPost.objects.all().order_by('scheduled_datetime')
+    scheduled_posts = ScheduledPost.objects.all().order_by('-scheduled_datetime')
     return render(request, 'blog/auto_schedule.html', {
         'form': form,
         'scheduled_posts': scheduled_posts,
     })
+
+@staff_member_required(login_url='login')
+def delete_scheduled_post(request, pk):
+    if not request.user.is_superuser:
+        return redirect('blog-home')
+    ScheduledPost.objects.filter(id=pk, created_by=request.user).delete()
+    return redirect('auto-schedule')
