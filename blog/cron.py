@@ -21,14 +21,14 @@ def publish_scheduled_blogs():
     wordpress_username = config('WORDPRESS_USERNAME')
     wordpress_password = config('WORDPRESS_APP_PASSWORD')
 
-    # Encode credentials for Basic Auth
+    # Encoding credentials for Basic Auth
     credentials = f"{wordpress_username}:{wordpress_password}"
     encoded_credentials = base64.b64encode(credentials.encode()).decode('utf-8')
 
     # Getting the current time in UTC
     current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
 
-    # Fetch records from Airtable
+    # Fetching records from Airtable
     headers = {
         'Authorization': f'Bearer {airtable_api_key}',
         'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ def publish_scheduled_blogs():
         print(f"Error fetching records from Airtable: {str(e)}")
         return
 
-    # Set up a session with retries for WordPress requests
+    # Setting up a session with retries for WordPress requests
     session = requests.Session()
     retries = Retry(
         total=5,
@@ -80,12 +80,12 @@ def publish_scheduled_blogs():
         primary_keyword = fields.get('Primary Keyword', '')
         additional_keywords = fields.get('Additional Keywords', '')
 
-        # Skip if the record already has a WP Post ID (to prevent duplicates)
+        # Skipping if the record already has a WP Post ID (to prevent duplicates)
         if fields.get('WP Post ID'):
             print(f"Skipping record {record_id}: Already published with WP Post ID {fields.get('WP Post ID')}")
             continue
 
-        # Prepare focus keywords (comma-separated string)
+        # Preparing focus keywords (comma-separated string)
         focus_keywords = primary_keyword
         if additional_keywords:
             focus_keywords = f"{primary_keyword}, {additional_keywords}"
@@ -110,7 +110,7 @@ def publish_scheduled_blogs():
             print(f"WordPress response: {e.response.text if e.response else 'No response'}")
             continue
 
-        # Update Airtable with Status and WP Post ID
+        # Updating Airtable with Status and WP Post ID
         update_data = {
             'fields': {
                 'Status': 'Published',
@@ -146,11 +146,11 @@ def sync_airtable_to_wordpress():
     wordpress_username = config('WORDPRESS_USERNAME')
     wordpress_password = config('WORDPRESS_APP_PASSWORD')
 
-    # Encode credentials for Basic Auth
+    # Encoding credentials for Basic Auth
     credentials = f"{wordpress_username}:{wordpress_password}"
     encoded_credentials = base64.b64encode(credentials.encode()).decode('utf-8')
 
-    # Fetch records from Airtable
+    # Fetching records from Airtable
     headers = {
         'Authorization': f'Bearer {airtable_api_key}',
         'Content-Type': 'application/json'
@@ -173,7 +173,7 @@ def sync_airtable_to_wordpress():
         print(f"Error fetching records from Airtable: {str(e)}")
         return
 
-    # Set up a session with retries for WordPress requests
+    # Setting up a session with retries for WordPress requests
     session = requests.Session()
     retries = Retry(
         total=5,
@@ -201,7 +201,7 @@ def sync_airtable_to_wordpress():
         primary_keyword = fields.get('Primary Keyword', '')
         additional_keywords = fields.get('Additional Keywords', '')
 
-        # Skip if the record already has a WP Post ID (to prevent duplicates)
+        # Skipping if the record already has a WP Post ID (to prevent duplicates)
         if fields.get('WP Post ID'):
             print(f"Skipping record {record_id}: Already synced with WP Post ID {fields.get('WP Post ID')}")
             continue
@@ -231,7 +231,7 @@ def sync_airtable_to_wordpress():
             print(f"WordPress response: {e.response.text if e.response else 'No response'}")
             continue
 
-        # Update Airtable with Status and WP Post ID
+        # Updating Airtable with Status and WP Post ID
         update_data = {
             'fields': {
                 'Status': 'Published',
