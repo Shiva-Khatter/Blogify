@@ -206,7 +206,7 @@ def sync_airtable_to_wordpress():
             print(f"Skipping record {record_id}: Already synced with WP Post ID {fields.get('WP Post ID')}")
             continue
 
-        # Prepare focus keywords (comma-separated string)
+        # Preparing focus keywords (comma-separated string)
         focus_keywords = primary_keyword
         if additional_keywords:
             focus_keywords = f"{primary_keyword}, {additional_keywords}"
