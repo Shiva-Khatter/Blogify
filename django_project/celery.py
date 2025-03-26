@@ -6,7 +6,7 @@ app = Celery('django_project')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
-# Add Beat schedule
+# Adding Beat schedule
 app.conf.beat_schedule = {
     'process-scheduled-posts-every-minute': {
         'task': 'blog.tasks.process_scheduled_posts',

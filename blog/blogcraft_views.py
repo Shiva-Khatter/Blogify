@@ -38,7 +38,7 @@ class BlogCraftView(LoginRequiredMixin, View):
         print("POST: Method called")
         print(f"POST data: {request.POST}")
 
-        # Get form data
+        # Getting form data
         topic = request.POST.get('topic', '').strip()
         primary_keyword = request.POST.get('primary_keyword', '').strip()
         additional_keywords = request.POST.get('additional_keywords', '').strip()
@@ -49,7 +49,7 @@ class BlogCraftView(LoginRequiredMixin, View):
         prompt_5 = request.POST.get('prompt_5', '').strip()
         feedback = request.POST.get('feedback', '').strip()
         action = request.POST.get('action')
-        publish_date = request.POST.get('publish_date', '').strip()  # New field for scheduling
+        publish_date = request.POST.get('publish_date', '').strip()  # New field set up for scheduling
         drafts = request.session.get('prompt_tier_drafts', [])
         current_refine_step = request.session.get('current_refine_step', 1)
         grammar_checked = request.session.get('grammar_checked', False)

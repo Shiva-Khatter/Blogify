@@ -3,10 +3,10 @@ import base64
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
+# Loading the environment variables from .env file
 load_dotenv()
 
-# Get credentials and URL from environment variables
+# Getting credentials and URL from environment variables
 wordpress_url = os.getenv("WORDPRESS_API_URL") + "/posts/764?context=edit"
 wordpress_username = os.getenv("WORDPRESS_USERNAME")
 wordpress_password = os.getenv("WORDPRESS_APP_PASSWORD")

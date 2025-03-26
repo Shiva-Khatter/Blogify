@@ -12,7 +12,7 @@ from datetime import datetime
 
 # Loading Airtable configuration
 AIRTABLE_API_KEY = config('AIRTABLE_API_KEY')
-AIRTABLE_BASE_ID = "appxq6U5GJiWQ2CF5"
+AIRTABLE_BASE_ID = config('AIRTABLE_BASE_ID')
 AIRTABLE_TABLE_NAME = "Blog Posts"
 
 # Connecting to Airtable
