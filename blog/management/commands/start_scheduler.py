@@ -31,3 +31,4 @@ class Command(BaseCommand):
         except (KeyboardInterrupt, SystemExit):
             scheduler.shutdown()
             self.stdout.write(self.style.SUCCESS("Scheduler shut down successfully."))
+            

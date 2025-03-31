@@ -1,0 +1,59 @@
+{% extends "blog/base.html" %}
+{% block content %}
+  <h1>SEO Blog Generator</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="keyword">Keyword/Topic:</label>
+      <input type="text" name="keyword" id="keyword" class="form-control" value="{{ keyword }}">
+    </div>
+    <button type="submit" name="action" value="generate" class="btn btn-custom-brown">Generate Blog</button>
+  </form>
+
+  {% if draft %}
+    <div class="content-section mt-4">
+      <h3>Generated Blog</h3>
+      <div class="card mb-3" style="border-color: rgba(26, 42, 68, 0.95);">
+        <div class="card-header" style="background-color: rgba(26, 42, 68, 0.95); color: #ffffff;">
+          {{ title }}
+        </div>
+        <div class="card-body">
+          <p>{{ draft }}</p>
+          <small class="text-muted">Length: {{ word_count }} words</small>
+        </div>
+      </div>
+
+      <!-- Feedback and Action Buttons -->
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="feedback">Feedback to Refine Blog:</label>
+          <textarea name="feedback" id="feedback" class="form-control" placeholder="e.g., Make it more concise or add more examples">{{ feedback }}</textarea>
+        </div>
+        <button type="submit" name="action" value="refine" class="btn btn-warning">Refine Blog</button>
+        <button type="submit" name="action" value="humanize" class="btn btn-info ml-2">Humanize Blog</button>
+        <button type="submit" name="action" value="check_grammar" class="btn btn-info ml-2">Grammar Zap</button>
+
+        <!-- Schedule and Publish Options -->
+        <div class="form-group mt-3">
+          <label for="publish_date">Schedule Publish Date (optional):</label>
+          <input type="datetime-local" name="publish_date" id="publish_date" class="form-control" style="width: auto; display: inline-block;">
+        </div>
+        <button type="submit" name="action" value="schedule" class="btn btn-warning mt-2 ml-2">Schedule</button>
+        <button type="submit" name="action" value="publish" class="btn btn-success mt-2 ml-2">Publish Now</button>
+      </form>
+
+      <!-- Grammar Check Results -->
+      {% if grammar_result %}
+        <div class="mt-3">
+          <h4>Grammar Check Results</h4>
+          <p>{{ grammar_result|default:"No issues found or fixes applied" }}</p>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  {% endif %}
+{% endblock %}

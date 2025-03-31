@@ -7,12 +7,12 @@ from urllib3.util.retry import Retry
 import base64
 import time
 
-# Set up logging
+# Setting up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def test_wordpress_api():
     try:
-        # Load credentials from .env
+        # Loading credentials from .env
         wordpress_url = config('WORDPRESS_API_URL') + "/posts"
         wordpress_username = config('WORDPRESS_USERNAME')
         wordpress_password = config('WORDPRESS_APP_PASSWORD')
@@ -20,16 +20,16 @@ def test_wordpress_api():
         airtable_table_name = 'Blog Posts'  # Hard-coded to match cron.py
         airtable_api_key = config('AIRTABLE_API_KEY')
 
-        # Encode credentials for Basic Auth
+        # Encoding credentials for Basic Auth
         credentials = f"{wordpress_username}:{wordpress_password}"
         encoded_credentials = base64.b64encode(credentials.encode()).decode('utf-8')
 
-        # Connect to Airtable
+        # Connecting to Airtable
         logging.info("Loading Airtable credentials from .env file")
         airtable = Airtable(airtable_base_id, airtable_table_name, airtable_api_key)
         logging.info("Connected to Airtable")
 
-        # Fetch scheduled posts from Airtable
+        # Fetching scheduled posts from Airtable
         records = airtable.get_all(formula="FIND('Scheduled', {Status})")
         if not records:
             logging.info("No scheduled posts found in Airtable")
@@ -38,7 +38,7 @@ def test_wordpress_api():
             print("Test failed. Check the logs for details.")
             return
 
-        # Take the first scheduled post
+        # Taking the first scheduled post
         record = records[0]
         record_id = record['id']
         fields = record['fields']
@@ -47,12 +47,12 @@ def test_wordpress_api():
         primary_keyword = fields.get('Primary Keyword', '')
         additional_keywords = fields.get('Additional Keywords', '')
 
-        # Prepare focus keywords (comma-separated string)
+        # Preparing focus keywords (comma-separated string)
         focus_keywords = primary_keyword
         if additional_keywords:
             focus_keywords = f"{primary_keyword}, {additional_keywords}"
 
-        # Set up a session with retries for WordPress requests
+        # Setting up a session with retries for WordPress requests
         session = requests.Session()
         retries = Retry(
             total=5,
@@ -71,7 +71,7 @@ def test_wordpress_api():
             'Referer': config('WORDPRESS_API_URL').rstrip('/wp-json/wp/v2')
         }
 
-        # Prepare WordPress API request
+        # Preparing WordPress API request
         post_data = {
             'title': title,
             'content': content,
@@ -81,7 +81,7 @@ def test_wordpress_api():
             }
         }
 
-        # Post to WordPress
+        # Posting to WordPress
         logging.info(f"Attempting to post to WordPress: {title}")
         response = session.post(wordpress_url, headers=wp_headers, json=post_data, timeout=60)
 
@@ -91,7 +91,7 @@ def test_wordpress_api():
             print(f"Successfully posted to WordPress: Post ID {wp_post_id}")
             print(f"Set custom meta field 'custom_focus_keywords' to: {focus_keywords}")
 
-            # Update Airtable status to Published
+            # Updating Airtable status to Published
             update_data = {
                 'Status': 'Published',
                 'WP Post ID': str(wp_post_id)

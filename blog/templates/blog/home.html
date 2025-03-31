@@ -2,10 +2,12 @@
 
 {% block content %}
     <!-- Hero Section -->
-    <div class="jumbotron" style="background-color: #f5efe3; border: 1px solid #b79d84; padding: 2rem;">
-        <h1 class="display-4">Welcome to Blogify!</h1>
-        <p class="lead">AI-powered blogging made simple—create, refine, and publish with a zap!</p>
-        <a class="btn btn-custom-brown btn-lg" href="{% url 'blog-generate' %}" role="button">Generate a Post</a>
+    <div class="hero-section">
+        <div class="hero-overlay">
+            <h1 class="display-4">Generate SEO Blog Posts Here!</h1>
+            <p class="lead">AI-powered SEO blogging made simple—create, optimize, and publish with ease.</p>
+            <a class="btn btn-custom-brown btn-lg" href="{% url 'seo-generator' %}" role="button">Start with SEO Blog Generator</a>
+        </div>
     </div>
 
     <!-- Existing Post List -->
@@ -26,7 +28,7 @@
     </article>
     {% endfor %}
 
-<!-- Pagination-->
+    <!-- Pagination -->
     {% if is_paginated %}
         {% if page_obj.has_previous %}
             <a class="btn btn-pagination mb-4" href="?page=1">First</a>
