@@ -29,7 +29,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
     wordpress_username = config('WORDPRESS_USERNAME')
     wordpress_password = config('WORDPRESS_APP_PASSWORD')
 
-    # Encoding credentials for Basic Auth
+    # Encoding the credentials for Basic Auth
     credentials = f"{wordpress_username}:{wordpress_password}"
     encoded_credentials = base64.b64encode(credentials.encode()).decode('utf-8')
 
