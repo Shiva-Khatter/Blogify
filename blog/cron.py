@@ -52,7 +52,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             return
     else:
         if immediate:
-            # Fetch the most recent "Published" record for immediate publishing
+            # Fetching the most recent "Published" record for immediate publishing
             params = {
                 'filterByFormula': '{Status} = "Published"',
                 'sort[0][field]': 'Created At',
@@ -60,7 +60,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
                 'maxRecords': 1
             }
         else:
-            # Fetch all scheduled records whose Publish Date has passed
+            # Fetching all scheduled records whose Publish Date has passed
             params = {
                 'filterByFormula': 'AND({Status} = "Scheduled", {Publish Date} <= NOW())',
                 'sort[0][field]': 'Publish Date',
@@ -120,21 +120,21 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             print(f"Skipping record {record_id}: Status is '{status}', expected '{expected_status}'.")
             continue
 
-        # Skip if the record already has a WP Post ID (to prevent duplicates)
+        # Skipping if the record already has a WP Post ID (to prevent duplicates)
         if fields.get('WP Post ID'):
             print(f"Skipping record {record_id}: Already published with WP Post ID {fields.get('WP Post ID')}")
             continue
 
-        # Prepare focus keywords (comma-separated string)
+        # Preparing focus keywords (comma-separated string)
         focus_keywords = primary_keyword
         if additional_keywords:
             focus_keywords = f"{primary_keyword}, {additional_keywords}"
 
-        # Determine WordPress post status
+        # Determining WordPress post status
         wp_status = "publish" if immediate else "draft"
         print(f"Posting to WordPress with status: {wp_status}")
 
-        # Post to WordPress with the appropriate status and custom meta field
+        # Posting to WordPress with the appropriate status and custom meta field
         wp_data = {
             'title': title,
             'content': content,
@@ -155,7 +155,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             print(f"WordPress response: {e.response.text if e.response else 'No response'}")
             continue
 
-        # Update Airtable with Status and WP Post ID
+        # Updating Airtable with Status and WP Post ID
         new_status = "Published"  # Use "Published" for both immediate and scheduled posts
         update_data = {
             'fields': {

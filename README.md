@@ -1,7 +1,7 @@
 # Blogify: Django Blog Scheduler
 
 ## Overview
-Blogify is a Django-based application designed to automate the process of scheduling and publishing blog posts from Airtable to a WordPress site. It uses a cron job to periodically fetch scheduled posts from Airtable and publish them as drafts to WordPress via the REST API. The project includes a test script for manual API testing and demonstrates skills in Django, API integration, task scheduling, and error handling. This project was developed as part of a portfolio to showcase backend development capabilities to potential employers.
+Blogify is a Django-based application designed to automate the process of scheduling and publishing blog posts from Airtable to a WordPress site. It uses a cron job to periodically fetch scheduled posts from Airtable and publish them as drafts to WordPress via the REST API. The project includes a test script for manual API testing and demonstrates skills in Django, API integration, task scheduling, and error handling.
 
 ## Features
 
