@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url  # Add this import for Heroku database configuration
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-_n)a0g&g(nwj+afk2=e6#gc^eaj7o@8ongxz()3diqvc9djpck')  # Use env variable for production
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-_n)a0g&g(nwj+afk2=e6#gc^eaj7o@8ongxz()3diqvc9djpck')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'True'
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.vercel.app']
 
 # Application definition
 INSTALLED_APPS = [
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add whitenoise middleware for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -80,10 +80,14 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),  # Fallback to SQLite for local development
-        conn_max_age=600  # Keep database connections alive for 600 seconds
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600
     )
 }
+
+# Override with environment variables for production
+if os.getenv('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -115,11 +119,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Where collectstatic will store files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Use whitenoise for static files
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Note: In production on Vercel, media files won’t work with the local file system.
+# Consider using a cloud storage service like AWS S3 or Cloudinary for media files.
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -128,21 +135,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'blog-home'
-LOGOUT_REDIRECT_URL = 'login'  
-
+LOGOUT_REDIRECT_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True 
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
 
 # APScheduler settings
 SCHEDULER_CONFIG = {
     "apscheduler.jobstores.default": {
         "type": "sqlalchemy",
-        "url": os.getenv('DATABASE_URL', 'sqlite:///scheduler.db'),  # Use Heroku's DATABASE_URL, fallback to SQLite locally
+        "url": os.getenv('SCHEDULER_DB_URL', 'sqlite:///scheduler.db'),
     },
     "apscheduler.executors.default": {
         "class": "apscheduler.executors.pool:ThreadPoolExecutor",
@@ -150,6 +156,6 @@ SCHEDULER_CONFIG = {
     },
     "apscheduler.job_defaults.coalesce": "false",
     "apscheduler.job_defaults.max_instances": "3",
-    "apscheduler.timezone": "Asia/Kolkata",  # Match your TIME_ZONE
+    "apscheduler.timezone": "Asia/Kolkata",
 }
-SCHEDULER_AUTOSTART = True
+SCHEDULER_AUTOSTART = os.getenv('SCHEDULER_AUTOSTART', 'True') == 'True'
