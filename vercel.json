@@ -25,5 +25,14 @@
   ],
   "env": {
     "PYTHONPATH": "/vercel/path0"
+  },
+  "build": {
+    "env": {
+      "ENABLE_PIP_INSTALL": "true"
+    },
+    "commands": [
+      "apt-get update",
+      "apt-get install -y libxml2-dev libxslt1-dev"
+    ]
   }
 }
