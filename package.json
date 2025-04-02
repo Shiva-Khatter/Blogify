@@ -1,0 +1,7 @@
+{
+    "name": "seoblogify",
+    "version": "1.0.0",
+    "scripts": {
+      "vercel-build": "apt-get update && apt-get install -y libxml2-dev libxslt1-dev && pip install -r requirements.txt"
+    }
+  }
