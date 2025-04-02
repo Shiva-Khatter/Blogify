@@ -1,21 +1,29 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "django_project/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "command": "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.11.2",
+        "buildCommand": "bash build_files.sh",
+        "installCommand": "pip install -r requirements.txt",
+        "outputDirectory": "staticfiles"
       }
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "dest": "/staticfiles/$1"
     },
     {
       "src": "/(.*)",
       "dest": "django_project/wsgi.py"
     }
-  ]
+  ],
+  "env": {
+    "PYTHONPATH": "/vercel/path0"
+  }
 }
