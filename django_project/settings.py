@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
-import dj_database_url
+from decouple import config  # Import python-decouple to load .env variables
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-_n)a0g&g(nwj+afk2=e6#gc^eaj7o@8ongxz()3diqvc9djpck')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-_n)a0g&g(nwj+afk2=e6#gc^eaj7o@8ongxz()3diqvc9djpck')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = config('DEBUG', default='True') == 'True'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.vercel.app']
 
@@ -78,16 +77,17 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
-    )
-}
 
-# Override with environment variables for production
-if os.getenv('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -123,7 +123,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [BASE_DIR / "blog/static"]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = Path(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Note: In production on Vercel, media files won’t work with the local file system.
@@ -142,14 +142,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
+EMAIL_HOST_USER = config('EMAIL_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASS')
 
 # APScheduler settings
 SCHEDULER_CONFIG = {
     "apscheduler.jobstores.default": {
         "type": "sqlalchemy",
-        "url": os.getenv('SCHEDULER_DB_URL', 'sqlite:///scheduler.db'),
+        "url": config('SCHEDULER_DB_URL', default='sqlite:///scheduler.db'),
     },
     "apscheduler.executors.default": {
         "class": "apscheduler.executors.pool:ThreadPoolExecutor",
@@ -159,4 +159,4 @@ SCHEDULER_CONFIG = {
     "apscheduler.job_defaults.max_instances": "3",
     "apscheduler.timezone": "Asia/Kolkata",
 }
-SCHEDULER_AUTOSTART = os.getenv('SCHEDULER_AUTOSTART', 'True') == 'True'
+SCHEDULER_AUTOSTART = config('SCHEDULER_AUTOSTART', default='True') == 'True'
