@@ -8,7 +8,7 @@
         "maxLambdaSize": "15mb",
         "runtime": "python3.11",
         "buildCommand": "bash build_files.sh",
-        "installCommand": "echo 'Skipping default install, handled in vercel-build script'",
+        "installCommand": "pip install -r requirements.txt",
         "outputDirectory": "staticfiles"
       }
     }
