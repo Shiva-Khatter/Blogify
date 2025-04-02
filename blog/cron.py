@@ -52,7 +52,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             return
     else:
         if immediate:
-            # Fetching the most recent "Published" record for immediate publishing
+            # Fetching  most recent "Published" record for immediate publishing
             params = {
                 'filterByFormula': '{Status} = "Published"',
                 'sort[0][field]': 'Created At',
@@ -130,7 +130,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
         if additional_keywords:
             focus_keywords = f"{primary_keyword}, {additional_keywords}"
 
-        # Determining WordPress post status
+        # Determining the WordPress post status
         wp_status = "publish" if immediate else "draft"
         print(f"Posting to WordPress with status: {wp_status}")
 
@@ -156,10 +156,10 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             continue
 
         # Updating Airtable with Status and WP Post ID
-        new_status = "Published"  # Use "Published" for both immediate and scheduled posts
+        new_status = "Published"  # Using "Published" for both immediate and scheduled posts
         update_data = {
             'fields': {
-                'Status': new_status,  # Ensure this matches the exact case in Airtable
+                'Status': new_status,  # Ensuring this matches the exact case in Airtable
                 'WP Post ID': str(wp_post_id)
             }
         }
@@ -173,7 +173,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             print(f"Airtable status code: {update_response.status_code}")
             print(f"Airtable response: {update_response.text}")
             print(f"Request payload: {update_data}")
-            # If the error is due to an invalid select option, log a suggestion
+            # If the error is due to an invalid then selecting option, log a suggestion
             if update_response.status_code == 422 and "INVALID_MULTIPLE_CHOICE_OPTIONS" in update_response.text:
                 print(f"Suggestion: Check the 'Status' field options in Airtable. Ensure '{new_status}' is an allowed option (case-sensitive).")
             continue
