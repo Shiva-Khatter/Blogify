@@ -1,29 +1,25 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "django_project/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.11.2",
-        "buildCommand": "bash build_files.sh",
-        "installCommand": "pip install -r requirements.txt",
-        "outputDirectory": "staticfiles"
+        "pythonVersion": "3.12"
       }
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/static/blog/favicon.ico"
     },
     {
       "src": "/(.*)",
       "dest": "django_project/wsgi.py"
     }
-  ],
-  "env": {
-    "PYTHONPATH": "/vercel/path0"
-  }
+  ]
 }
