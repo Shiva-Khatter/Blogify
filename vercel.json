@@ -8,7 +8,7 @@
         "maxLambdaSize": "15mb",
         "runtime": "python3.11",
         "buildCommand": "bash build_files.sh",
-        "installCommand": "pip install -r requirements.txt",
+        "installCommand": "echo 'Skipping default install, handled in vercel-build script'",
         "outputDirectory": "staticfiles"
       }
     }
@@ -25,14 +25,5 @@
   ],
   "env": {
     "PYTHONPATH": "/vercel/path0"
-  },
-  "build": {
-    "env": {
-      "ENABLE_PIP_INSTALL": "true"
-    },
-    "commands": [
-      "apt-get update",
-      "apt-get install -y libxml2-dev libxslt1-dev"
-    ]
   }
 }
