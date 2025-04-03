@@ -1,11 +1,9 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "django_project/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "command": "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -19,6 +17,7 @@
     }
   ],
   "env": {
-    "DJANGO_SETTINGS_MODULE": "django_project.settings"
+    "DJANGO_SETTINGS_MODULE": "django_project.settings",
+    "PYTHON_VERSION": "3.11"
   }
 }
