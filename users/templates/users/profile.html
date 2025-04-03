@@ -2,7 +2,7 @@
 {% block content %}
 <div class="content-section">
     <div class="media">
-        <img class="rounded-circle account-img" src="{% if debug %}{{ user.profile.image.url }}{% else %}{{ 'https://via.placeholder.com/150' }}{% endif %}" alt="Profile Image">
+        <img class="rounded-circle account-img" src="{% if not debug %}{{ user.profile.image.url|default:'https://via.placeholder.com/150' }}{% else %}{{ user.profile.image.url }}{% endif %}" alt="Profile Image">
         <div class="media-body">
             <h2 class="account-heading">{{ user.username }}</h2>
             <p class="text-secondary">{{ user.email }}</p>
