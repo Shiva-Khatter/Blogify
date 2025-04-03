@@ -11,7 +11,7 @@
 <!-- Existing Post List -->
 {% for post in posts %}
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{% if not debug %}{{ post.author.profile.image.url|default:'https://via.placeholder.com/150' }}{% else %}{{ post.author.profile.image.url }}{% endif %}" alt="Profile Image">
+        <img class="rounded-circle article-img" src="{% if debug %}{{ post.author.profile.image.url }}{% else %}{{ 'https://via.placeholder.com/150' }}{% endif %}" alt="Profile Image">
         <div class="media-body">
             <div class="article-metadata">
                 <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
