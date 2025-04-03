@@ -1,19 +1,17 @@
 {% extends "blog/base.html" %}
-
 {% block content %}
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="hero-overlay">
-            <h1 class="display-4">Generate SEO Blog Posts Here!</h1>
-            <p class="lead">AI-powered SEO blogging made simple—create, optimize, and publish with ease.</p>
-            <a class="btn btn-custom-brown btn-lg" href="{% url 'seo-generator' %}" role="button">Start with SEO Blog Generator</a>
-        </div>
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-overlay">
+        <h1 class="display-4">Generate SEO Blog Posts Here!</h1>
+        <p class="lead">AI-powered SEO blogging made simple—create, optimize, and publish with ease.</p>
+        <a class="btn btn-custom-brown btn-lg" href="{% url 'seo-generator' %}" role="button">Start with SEO Blog Generator</a>
     </div>
-
-    <!-- Existing Post List -->
-    {% for post in posts %}
+</div>
+<!-- Existing Post List -->
+{% for post in posts %}
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+        <img class="rounded-circle article-img" src="{% if not debug %}{{ post.author.profile.image.url|default:'https://via.placeholder.com/150' }}{% else %}{{ post.author.profile.image.url }}{% endif %}" alt="Profile Image">
         <div class="media-body">
             <div class="article-metadata">
                 <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
@@ -26,26 +24,23 @@
             </p>
         </div>
     </article>
-    {% endfor %}
-
-    <!-- Pagination -->
-    {% if is_paginated %}
-        {% if page_obj.has_previous %}
-            <a class="btn btn-pagination mb-4" href="?page=1">First</a>
-            <a class="btn btn-pagination mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <a class="btn btn-pagination active-page mb-4" href="?page={{ num }}">{{ num }}</a>
-            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
-                <a class="btn btn-pagination mb-4" href="?page={{ num }}">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-            <a class="btn btn-pagination mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-            <a class="btn btn-pagination mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-        {% endif %}
+{% endfor %}
+<!-- Pagination -->
+{% if is_paginated %}
+    {% if page_obj.has_previous %}
+        <a class="btn btn-pagination mb-4" href="?page=1">First</a>
+        <a class="btn btn-pagination mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
     {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a class="btn btn-pagination active-page mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+            <a class="btn btn-pagination mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a class="btn btn-pagination mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-pagination mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+{% endif %}
 {% endblock %}
