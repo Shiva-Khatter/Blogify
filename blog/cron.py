@@ -180,3 +180,4 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
         except Exception as e:
             print(f"Unexpected error updating Airtable for record {record_id}: {str(e)}")
             continue
+# must create a different cron job onto vercel for scheduler to work (Celery and AP wont in a production environment )
