@@ -18,7 +18,9 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.decorators.csrf import csrf_exempt  # Add this for cron safety
 from users import views as user_views
+from blog.scheduler import run_scheduler 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +33,8 @@ urlpatterns = [
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name = 'users/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirmed/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name = 'users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('', include('blog.urls')),
+    path('api/schedule-blogs/', run_scheduler, name='schedule-blogs'),
+    path('api/schedule-blogs', csrf_exempt(run_scheduler), name='schedule-blogs-no-slash'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
