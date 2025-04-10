@@ -9,7 +9,7 @@ import requests
 from datetime import datetime
 import pytz  # For timezone handling
 
-# Configure Gemini API
+# Configuring Gemini API
 genai.configure(api_key=config('GEMINI_API_KEY'))
 
 class SEOBlogGeneratorView(LoginRequiredMixin, View):
@@ -33,19 +33,19 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
         })
 
     def post(self, request):
-        # Capture the keyword from the form and preserve it
+        # Capturing the keyword from the form and preserve it
         initial_keyword = request.POST.get('keyword', '').strip()
         feedback = request.POST.get('feedback', '').strip()
         action = request.POST.get('action')
         draft = request.session.get('seo_draft', {})
 
-        # Store the initial keyword in the session and use it throughout
+        # Storing the initial keyword in the session and use it throughout
         request.session['keyword'] = initial_keyword if initial_keyword else request.session.get('keyword', '')
         keyword = request.session['keyword']  # Use session keyword consistently
         request.session['feedback'] = feedback
         request.session['error'] = ''
 
-        # Debug: Log the keyword at every stage
+        # Debug: Logging the keyword at every stage
         print(f"Initial keyword from form: '{initial_keyword}'")
         print(f"Keyword stored in session: '{request.session['keyword']}'")
         print(f"Current keyword in use: '{keyword}'")
@@ -62,7 +62,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                     request.session['error'] = "Failed to generate blog content."
                 else:
                     draft = blog_content
-                    # Prepare record for Airtable (optional: save draft to Airtable)
+                    # Preparing record for Airtable (optional: save draft to Airtable)
                     record = {
                         "Title": draft['title'],
                         "Content": draft['body'],
@@ -72,7 +72,6 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         "Created At": datetime.now().isoformat()
                     }
                     print("Record being sent to Airtable (generate):", record)  # Debug
-                    # Uncomment the following line if you want to save to Airtable during generation
                     # save_to_airtable(record)
                     request.session['seo_draft'] = draft
                     request.session['grammar_result'] = ''
@@ -143,7 +142,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         fixed_text = draft['body']
                         offset_shift = 0
                         for match in matches:
-                            # Skip fixes that might affect HTML tags
+                            # Skipping fixes that might affect HTML tags
                             if any(fixed_text[match['offset'] + offset_shift:match['offset'] + offset_shift + match['length']].startswith(tag) 
                                    for tag in ['<h2>', '<p>', '<strong>', '<em>', '</h2>', '</p>', '</strong>', '</em>']):
                                 continue
@@ -170,36 +169,36 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                     request.session['error'] = "Please provide a publish date for scheduling."
                 else:
                     try:
-                        # Define the timezone (IST, since your server time is in +0530)
+                        # Defining the timezone (IST, since your server time is in +0530)
                         local_tz = pytz.timezone('Asia/Kolkata')
 
-                        # Parse the publish date or use current time for immediate publishing
+                        # Parsing the publish date or use current time for immediate publishing
                         if publish_date_str:
                             publish_date = datetime.strptime(publish_date_str, "%Y-%m-%dT%H:%M")
                             publish_date = local_tz.localize(publish_date)  # Make publish_date timezone-aware
                         else:
                             publish_date = datetime.now(local_tz)  # Use current time for "Publish Now"
 
-                        # Get the current time in the same timezone
+                        # Current time in the same timezone
                         now = datetime.now(local_tz)
 
-                        # Debug: Log the dates
+                        # Debug: Logging the dates
                         print(f"Action: {action}")
                         print(f"Publish Date (parsed): {publish_date}")
                         print(f"Current Time: {now}")
 
-                        # Debug: Log the keyword before preparing the record
+                        # Debug: Logging the keyword before preparing the record
                         print(f"Keyword before preparing record: '{keyword}'")
                         print(f"Session keyword: '{request.session.get('keyword', '')}'")
 
-                        # Determine status based on the action
+                        # Determining status based on the action
                         if action == 'schedule':
                             status = "Scheduled"
                         else:  # action == 'publish'
                             status = "Published"
                         print(f"Determined Status: {status}")
 
-                        # Prepare record for Airtable with ensured Primary Keyword
+                        # Preparing record for Airtable with ensured Primary Keyword
                         record = {
                             "Title": draft['title'],
                             "Content": draft['body'],
@@ -210,16 +209,16 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                             "Created At": datetime.now().isoformat()
                         }
                         print("Record being sent to Airtable:", record)  # Debug: Log the record
-                        # Save to Airtable using the full record
+                        # Saving to Airtable using the full record
                         saved_record = save_to_airtable(record)
                         if saved_record:
                             if status == "Published":
                                 print("Status is Published, calling publish_scheduled_blogs() to publish immediately")
-                                # Pass the record_id from the saved record, indicate immediate publishing
+                                # Passing the record_id from the saved record, indicate immediate publishing
                                 publish_scheduled_blogs(record_id=saved_record['id'], immediate=True)
                             else:
                                 print("Status is Scheduled, not publishing immediately")
-                            # Clear session to reset the form
+                            # Clearing session to reset the form
                             request.session['seo_draft'] = {}
                             request.session['keyword'] = ''
                             request.session['feedback'] = ''
