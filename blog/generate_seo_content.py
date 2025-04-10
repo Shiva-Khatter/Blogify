@@ -240,30 +240,37 @@ def generate_blog_content(texts, primary_keyword):
     model = genai.GenerativeModel('gemini-1.5-flash')
 
     prompt = f"""
-    Using the following text, create a well-structured blog post about '{primary_keyword}'. The blog should include:
-    - A catchy title (up to 60 characters) that includes the keyword '{primary_keyword}'.
-    - A body (800-1200 words, with a minimum of 500 words) with an introduction, several sections with subheadings, and a conclusion.
-    The content should be engaging, informative, and optimized for SEO, naturally incorporating the keyword '{primary_keyword}' at least 5-7 times throughout the body, including in the introduction and conclusion.
-    Use the keyword in at least one subheading. Focus on the core information, avoiding sensitive details like personal information or contact details. Do not add information beyond what is provided in the text.
+    Create a blog post about '{primary_keyword}' using the text below. The post should be in HTML format, optimized for WordPress, with:
+    - A catchy title (up to 60 characters) including '{primary_keyword}'.
+    - A body (800-1200 words, minimum 500 words) with an introduction, sections with <h2> subheadings, paragraphs in <p> tags, and emphasis with <strong> or <em>.
+    - SEO-optimized, using '{primary_keyword}' 5-7 times, including in one <h2> and the intro/conclusion.
+    - Focus only on the provided text, avoiding extra details.
 
     Text: {combined_text}
 
-    Provide the blog post in the following format:
+    Return the result as:
     Title: [Your title here]
-    Body:
-    [Your blog content here with subheadings]
+    Body: [Your full HTML content here, e.g., <h2>Introduction</h2><p>Text...</p><h2>{primary_keyword} Section</h2><p>More text...</p>]
     """
 
     try:
         print("Generating blog content with Gemini...")
         response = model.generate_content(prompt)
         blog_content = response.text.strip()
+        print(f"Raw Gemini response: {blog_content}")  # Debug: Log raw response
 
-        title_match = re.search(r'Title:\s*(.+?)(?=\nBody:|\n|$)', blog_content)
+        title_match = re.search(r'Title:\s*(.+?)(?=\nBody:|\n|$)', blog_content, re.DOTALL)
         body_match = re.search(r'Body:\s*(.+)', blog_content, re.DOTALL)
 
         title = title_match.group(1).strip() if title_match else f"{primary_keyword}: A Comprehensive Guide"
         body = body_match.group(1).strip() if body_match else "No content generated."
+
+        # Debug: Log extracted body
+        print(f"Extracted body (raw): {body}")
+
+        # Ensure body meets minimum length with fallback
+        if len(body) < 800 and "No content generated" in body:
+            body = f"<h2>Introduction to {primary_keyword}</h2><p>This is a fallback to ensure content. Please check input data or Gemini response.</p>"
 
         print(f"Generated blog title: {title}")
         print(f"Generated blog body (Length: {len(body)} characters): {body[:500]}...")

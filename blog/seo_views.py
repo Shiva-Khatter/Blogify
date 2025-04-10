@@ -111,7 +111,8 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                 max_words = original_word_count + 30
                 prompt = (
                     f"Rewrite this blog post: '{draft['body']}' to sound less robotic, with a natural, conversational tone and a flowy structure. "
-                    f"Remove any special characters like **, ##, or other markdown formatting, making it ready to post on WordPress without extra editing. "
+                    f"Preserve all HTML tags (<h2>, <p>, <strong>, <em>) as they are essential for WordPress formatting. "
+                    f"Remove any special characters like **, ##, or other markdown formatting that are not HTML. "
                     f"Maintain SEO optimization for the keyword '{keyword}'. "
                     f"The original blog has {original_word_count} words. Ensure the rewritten blog has a word count between {min_words} and {max_words} words, "
                     f"avoiding any significant decrease in length. If necessary, add relevant details or examples to maintain the length while improving the tone."
@@ -142,13 +143,17 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         fixed_text = draft['body']
                         offset_shift = 0
                         for match in matches:
+                            # Skip fixes that might affect HTML tags
+                            if any(fixed_text[match['offset'] + offset_shift:match['offset'] + offset_shift + match['length']].startswith(tag) 
+                                   for tag in ['<h2>', '<p>', '<strong>', '<em>', '</h2>', '</p>', '</strong>', '</em>']):
+                                continue
                             start = match['offset'] + offset_shift
                             length = match['length']
                             replacement = match['replacements'][0]['value'] if match['replacements'] else fixed_text[start:start+length]
                             fixed_text = fixed_text[:start] + replacement + fixed_text[start+length:]
                             offset_shift += len(replacement) - length
                         draft['body'] = fixed_text
-                        request.session['grammar_result'] = f"Applied {len(matches)} grammar fixes."
+                        request.session['grammar_result'] = f"Applied {len(matches)} grammar fixes (HTML tags preserved)."
                     else:
                         request.session['grammar_result'] = "No grammar issues found."
                     request.session['seo_draft'] = draft
