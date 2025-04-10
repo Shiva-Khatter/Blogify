@@ -62,6 +62,21 @@ ul {
   width: 100%;
 }
 
+/* Logo Styling */
+.navbar-brand {
+  color: #F8F5F0; /* Soft Ivory */
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-decoration: none;
+  padding: 0 15px; /* Matches nav-link padding for alignment */
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: #D4AF37; /* Muted Gold */
+}
+
 /* Sparkle Effect */
 .sparkle {
   color: #D4AF37; /* Muted Gold */
@@ -250,38 +265,6 @@ a.article-title:hover {
   margin-bottom: 2rem;
 }
 
-/* Sidebar Styles */
-.content-section.sidebar {
-  background: #FFFFFF; /* White */
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.content-section.sidebar h3,
-.content-section.sidebar h4 {
-  color: #1A2A44; /* Deep Navy Blue */
-}
-
-.content-section.sidebar .text-muted {
-  color: #666666;
-}
-
-.content-section.sidebar .list-group-item {
-  border: none;
-  padding: 10px 0;
-}
-
-.content-section.sidebar .list-group-item a {
-  color: #4A919E; /* Muted Teal */
-  transition: color 0.3s ease;
-}
-
-.content-section.sidebar .list-group-item a:hover {
-  color: #1A2A44; /* Deep Navy Blue */
-  text-decoration: none;
-}
-
 /* About Page Styles */
 .about-section {
   background: #FFFFFF; /* White */
@@ -341,10 +324,4 @@ footer.bg-steel {
 footer p {
   margin: 0;
   color: #F8F5F0;
-}
-
-/* Logo */
-.logo {
-  height: 40px;
-  width: auto;
 }
