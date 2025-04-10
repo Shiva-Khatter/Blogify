@@ -33,22 +33,22 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
         })
 
     def post(self, request):
-        # Capture the keyword from the form
-        keyword = request.POST.get('keyword', '').strip()
+        # Capture the keyword from the form and preserve it
+        initial_keyword = request.POST.get('keyword', '').strip()
         feedback = request.POST.get('feedback', '').strip()
         action = request.POST.get('action')
         draft = request.session.get('seo_draft', {})
 
-        # Debug: Log the keyword received from the form
-        print(f"Received keyword from form: '{keyword}'")
-
-        # Store the keyword in the session
-        request.session['keyword'] = keyword
+        # Store the initial keyword in the session and use it throughout
+        request.session['keyword'] = initial_keyword if initial_keyword else request.session.get('keyword', '')
+        keyword = request.session['keyword']  # Use session keyword consistently
         request.session['feedback'] = feedback
         request.session['error'] = ''
 
-        # Debug: Log the keyword after storing in session
+        # Debug: Log the keyword at every stage
+        print(f"Initial keyword from form: '{initial_keyword}'")
         print(f"Keyword stored in session: '{request.session['keyword']}'")
+        print(f"Current keyword in use: '{keyword}'")
 
         if action == 'generate':
             if not keyword:
@@ -199,12 +199,12 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                             status = "Published"
                         print(f"Determined Status: {status}")
 
-                        # Prepare record for Airtable
+                        # Prepare record for Airtable with ensured Primary Keyword
                         record = {
                             "Title": draft['title'],
                             "Content": draft['body'],
                             "SEO Summary": draft.get('meta_description', ''),
-                            "Primary Keyword": keyword or request.session.get('keyword', ''),  # Fallback to session keyword
+                            "Primary Keyword": keyword if keyword else request.session.get('keyword', 'N/A'),  # Enforce keyword
                             "Publish Date": publish_date.isoformat(),
                             "Status": status,
                             "Created At": datetime.now().isoformat()

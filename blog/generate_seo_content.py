@@ -24,7 +24,7 @@ def fetch_google_articles(primary_keyword, num_results=4, fetch_limit=10):
         'cx': cx,
         'q': primary_keyword,
         'num': fetch_limit,
-        'safe': 'active',  # for safe search to filter out any spam/ads/fraudulent content on the web
+        'safe': 'active',  # for safe search to filter out spam/ads/fraudulent content
     }
     try:
         response = requests.get(url, params=params)
@@ -32,7 +32,7 @@ def fetch_google_articles(primary_keyword, num_results=4, fetch_limit=10):
         results = response.json().get('items', [])
         
         organic_results = []
-        ad_domains = ['googleads.g.doubleclick.net', 'adservice.google.com']  # common ad domains (to be ignored)
+        ad_domains = ['googleads.g.doubleclick.net', 'adservice.google.com']
         social_media_domains = ['reddit.com', 'instagram.com', 'facebook.com']
         for item in results:
             display_link = item.get('displayLink', '')
@@ -118,12 +118,9 @@ def clean_text(text):
     if not text:
         return ""
 
-    # Removing personal info (e.g., author names, "Post author: Sakshi Padiyar")
     text = re.sub(r'Post author:\s*[A-Za-z\s]+', '', text, flags=re.IGNORECASE)
     text = re.sub(r'Comment by\s*[A-Za-z\s]+', '', text, flags=re.IGNORECASE)
     text = re.sub(r'Author\s*-\s*[A-Za-z\s]+', '', text, flags=re.IGNORECASE)
-
-    # Removing metadata (e.g., "Post published:Oct 1, 2022", "LAST UPDATED: 26/02/25")
     text = re.sub(r'Post published:\s*[A-Za-z0-9\s,]+', '', text, flags=re.IGNORECASE)
     text = re.sub(r'Post last modified:\s*[A-Za-z0-9\s,]+', '', text, flags=re.IGNORECASE)
     text = re.sub(r'LAST UPDATED:\s*[0-9/]+', '', text, flags=re.IGNORECASE)
@@ -131,39 +128,19 @@ def clean_text(text):
     text = re.sub(r':school/Blog', '', text, flags=re.IGNORECASE)
     text = re.sub(r':Mar 26, 2025The Top 10 Boarding Schools in Dehradun for 2025-26', '', text, flags=re.IGNORECASE)
     text = re.sub(r'The Top 10 Boarding Schools in Dehradun for 2025-26', '', text, flags=re.IGNORECASE)
-
-    # Removing email addresses
     text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '', text)
-
-    # Removing phone numbers (e.g., +91 1234567890, (123) 456-7890)
     text = re.sub(r'\+?\d{1,3}[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}', '', text)
-
-    # Removing addresses (simplified, looks for patterns like "123 Street Name, City, State")
     text = re.sub(r'\d+\s+[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*India\s*\d{6}', '', text, flags=re.IGNORECASE)
     text = re.sub(r'[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*Uttarakhand,\s*India\s*\d{5,6}', '', text, flags=re.IGNORECASE)
-
-    # Removing emojis (Unicode range for emojis)
     text = re.sub(r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]', '', text)
-
-    # Removing navigation/menu-related text
     text = re.sub(r'Enquire now|Table of Contents|Toggle|Read More|Leave a Reply|Cancel reply|Enter your name or username to comment|Enter your email address to comment|Enter your website URL \(optional\)|Save my name, email, and website in this browser for the next time I comment|Also Read:.*?(?=\n|$)', '', text, flags=re.IGNORECASE)
-
-    # Removing comments section (e.g., "This Post Has 40 Comments" and everything after)
     text = re.split(r'This Post Has \d+ Comments', text, flags=re.IGNORECASE)[0]
-
-    # Removing ratings (e.g., "4.5 ⭐⭐⭐⭐⭐ (619 Reviews)")
     text = re.sub(r'\d\.\d\s*⭐+\s*\(\d+\s*Reviews\)', '', text)
-
-    # Removing specific school info (e.g., "Fee Structure (Annual)Rs 700000 – 1000000", "Grades4-12")
     text = re.sub(r'Fee Structure \(Annual\)Rs \d+(?:\s*–\s*\d+)?', '', text)
     text = re.sub(r'Grades(KG|[0-9]+)-[0-9]+', '', text)
     text = re.sub(r'Indoor (Sports|Games)\w+[^:\n]*(?=\n|$)', '', text)
     text = re.sub(r'Outdoor sports\w+[^:\n]*(?=\n|$)', '', text)
-
-    # Removing section headers (e.g., "Important School Information:-", "Location –")
     text = re.sub(r'Important School Information:-|Location\s*–|Address', '', text, flags=re.IGNORECASE)
-
-    # Removing extra whitespace and newlines
     text = re.sub(r'\s+', ' ', text).strip()
 
     return text
@@ -204,7 +181,6 @@ def generate_description(texts, primary_keyword):
         print("Generating description with Gemini...")
         response = model.generate_content(prompt)
         description = response.text.strip()
-        # Ensure the description is within 150-160 characters
         if len(description) > 160:
             description = description[:157] + "..."
         print(f"Generated meta description (Length: {len(description)} characters): {description}")
@@ -220,7 +196,7 @@ def generate_blog_content(texts, primary_keyword):
         texts (list): List of cleaned extracted texts.
         primary_keyword (str): The primary keyword to focus the blog on.
     Returns:
-        dict: A dictionary containing the title, meta description, and body of the blog.
+        dict: A dictionary containing the title, meta_description, and body of the blog.
     """
     if not texts:
         print("No texts provided for blog generation.")
@@ -265,10 +241,8 @@ def generate_blog_content(texts, primary_keyword):
         title = title_match.group(1).strip() if title_match else f"{primary_keyword}: A Comprehensive Guide"
         body = body_match.group(1).strip() if body_match else "No content generated."
 
-        # Debug: Log extracted body
         print(f"Extracted body (raw): {body}")
 
-        # Ensure body meets minimum length with fallback
         if len(body) < 800 and "No content generated" in body:
             body = f"<h2>Introduction to {primary_keyword}</h2><p>This is a fallback to ensure content. Please check input data or Gemini response.</p>"
 
@@ -297,33 +271,52 @@ def save_to_airtable(record):
         return None
 
     try:
-        # Configure Airtable
         api_key = config('AIRTABLE_API_KEY')
         base_id = config('AIRTABLE_BASE_ID')
         table_name = config('AIRTABLE_TABLE_NAME')
 
-        # Connect to the Airtable table
-        table = Table(api_key, base_id, table_name)
-
-        # Prepare the record to save
+        primary_keyword = record.get("Primary Keyword", "").strip().replace('"', '')
+        if len(primary_keyword) > 50:
+            primary_keyword = primary_keyword[:50]  # Test with shorter length
         airtable_record = {
             "Title": record.get("Title", ""),
             "Content": record.get("Content", ""),
             "SEO Summary": record.get("SEO Summary", ""),
-            "Primary Keyword": record.get("Primary Keyword", ""),
+            "Primary Keyword": primary_keyword if primary_keyword else "N/A",
             "Status": record.get("Status", "Draft"),
             "Publish Date": record.get("Publish Date", ""),
             "Created At": record.get("Created At", datetime.now().isoformat())
         }
 
-        # Save the record to Airtable and return the saved record
+        print(f"Sending to Airtable: {airtable_record}")
+
+        # Try with pyairtable
+        table = Table(api_key, base_id, table_name)
         saved_record = table.create(airtable_record)
         print(f"Successfully saved blog post '{record.get('Title')}' to Airtable. Record ID: {saved_record['id']}")
         return saved_record
 
     except Exception as e:
-        print(f"Error saving to Airtable: {str(e)}")
-        return None
+        print(f"Error saving to Airtable with pyairtable: {str(e)}")
+        # Try raw API call
+        try:
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+            url = f"https://api.airtable.com/v0/{base_id}/{table_name}"
+            payload = {"fields": airtable_record}  # Ensure proper JSON structure
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            saved_record = response.json()
+            print(f"Successfully saved via raw API. Response: {saved_record}")
+            return saved_record
+        except Exception as raw_e:
+            print(f"Error saving to Airtable with raw API: {str(raw_e)}")
+            # Log the raw API response for debugging
+            if 'response' in locals():
+                print(f"Raw API response text: {response.text}")
+            return None
 
 if __name__ == "__main__":
     primary_keyword = "Best Boarding schools in Deheradun"
@@ -340,7 +333,6 @@ if __name__ == "__main__":
     print("Meta Description:", blog_content["meta_description"])
     print("Blog Body:", blog_content["body"])
     
-    # Saving the blog content to Airtable
     record = {
         "Title": blog_content["title"],
         "Content": blog_content["body"],
