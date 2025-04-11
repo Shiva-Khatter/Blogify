@@ -217,7 +217,7 @@ def generate_blog_content(texts, primary_keyword):
 
     prompt = f"""
     Create a blog post about '{primary_keyword}' using the text below. The post should be in HTML format, optimized for WordPress, with:
-    - A catchy title (up to 60 characters) including '{primary_keyword}'.
+    - A catchy and engaging title (up to 60 characters) including '{primary_keyword}'.
     - A body (800-1200 words, minimum 500 words) with an introduction, sections with <h2> subheadings, paragraphs in <p> tags, and emphasis with <strong> or <em>.
     - SEO-optimized, using '{primary_keyword}' 5-7 times, including in one <h2> and the intro/conclusion.
     - Focus only on the provided text, avoiding extra details.
