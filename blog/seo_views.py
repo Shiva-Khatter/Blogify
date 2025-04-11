@@ -110,7 +110,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                 max_words = original_word_count + 30
                 prompt = (
                     f"Rewrite this blog post: '{draft['body']}' to sound less robotic, with a natural, conversational tone and a flowy structure. "
-                    f"Preserve all HTML tags (<h2>, <p>, <strong>, <em>) as they are essential for WordPress formatting. "
+                    f"Preserve all the HTML tags (<h2>, <p>, <strong>, <em>) as they are essential for WordPress formatting. "
                     f"Remove any special characters like **, ##, or other markdown formatting that are not HTML. "
                     f"Maintain SEO optimization for the keyword '{keyword}'. "
                     f"The original blog has {original_word_count} words. Ensure the rewritten blog has a word count between {min_words} and {max_words} words, "
