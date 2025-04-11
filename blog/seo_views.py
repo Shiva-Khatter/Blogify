@@ -224,7 +224,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                             request.session['feedback'] = ''
                             request.session['grammar_result'] = ''
                             request.session.modified = True
-                            return redirect('blog-home')  # Redirect to homepage after success
+                            return redirect('blog-home')  # Redirecting to our homepage after success
                         else:
                             request.session['error'] = "Failed to save to Airtable."
                     except ValueError as e:
