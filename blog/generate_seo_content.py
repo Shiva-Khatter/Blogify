@@ -290,7 +290,7 @@ def save_to_airtable(record):
 
         print(f"Sending to Airtable: {airtable_record}")
 
-        # Try with pyairtable
+        # Trying with pyairtable
         table = Table(api_key, base_id, table_name)
         saved_record = table.create(airtable_record)
         print(f"Successfully saved blog post '{record.get('Title')}' to Airtable. Record ID: {saved_record['id']}")
@@ -298,7 +298,7 @@ def save_to_airtable(record):
 
     except Exception as e:
         print(f"Error saving to Airtable with pyairtable: {str(e)}")
-        # Try raw API call
+        # Trying the raw API call
         try:
             headers = {
                 "Authorization": f"Bearer {api_key}",
@@ -313,7 +313,7 @@ def save_to_airtable(record):
             return saved_record
         except Exception as raw_e:
             print(f"Error saving to Airtable with raw API: {str(raw_e)}")
-            # Log the raw API response for debugging
+            # Logging the raw API response for debugging
             if 'response' in locals():
                 print(f"Raw API response text: {response.text}")
             return None
