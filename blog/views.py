@@ -15,7 +15,7 @@ AIRTABLE_API_KEY = config('AIRTABLE_API_KEY')
 AIRTABLE_BASE_ID = config('AIRTABLE_BASE_ID')
 AIRTABLE_TABLE_NAME = "Blog Posts"
 
-# Connecting to Airtable
+# Connecting to Airtable 
 airtable = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME)
 
 def home(request):
@@ -242,7 +242,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
                     'error': 'Complete all prompts up to Prompt 4 before checking grammar.'
                 })
 
-            if len(drafts) > 4:  # If blog is already grammar zapped
+            if len(drafts) > 4:  # If the blog is already grammar zapped  
                 return render(request, self.template_name, {
                     'topic': topic,
                     'primary_keyword': primary_keyword,
