@@ -142,7 +142,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         fixed_text = draft['body']
                         offset_shift = 0
                         for match in matches:
-                            # Skipping fixes that might affect HTML tags
+                            # Skipping the fixes that might affect the HTML Tags 
                             if any(fixed_text[match['offset'] + offset_shift:match['offset'] + offset_shift + match['length']].startswith(tag) 
                                    for tag in ['<h2>', '<p>', '<strong>', '<em>', '</h2>', '</p>', '</strong>', '</em>']):
                                 continue
