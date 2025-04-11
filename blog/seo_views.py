@@ -209,7 +209,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                             "Created At": datetime.now().isoformat()
                         }
                         print("Record being sent to Airtable:", record)  # Debug: Log the record
-                        # Saving to Airtable using the full record
+                        # Saving to Airtable using full record
                         saved_record = save_to_airtable(record)
                         if saved_record:
                             if status == "Published":
