@@ -34,7 +34,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
     credentials = f"{wordpress_username}:{wordpress_password}"
     encoded_credentials = base64.b64encode(credentials.encode()).decode('utf-8')
 
-    # Headers for Airtable API
+    # Headers for the Airtable API
     headers = {
         'Authorization': f'Bearer {airtable_api_key}',
         'Content-Type': 'application/json'
