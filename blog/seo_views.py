@@ -142,7 +142,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         fixed_text = draft['body']
                         offset_shift = 0
                         for match in matches:
-                            # Skipping the fixes that might affect the HTML Tags 
+                            # Skipping fixes that might affect the HTML Tags 
                             if any(fixed_text[match['offset'] + offset_shift:match['offset'] + offset_shift + match['length']].startswith(tag) 
                                    for tag in ['<h2>', '<p>', '<strong>', '<em>', '</h2>', '</p>', '</strong>', '</em>']):
                                 continue
@@ -169,7 +169,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                     request.session['error'] = "Please provide a publish date for scheduling."
                 else:
                     try:
-                        # Defining the timezone (IST, since your server time is in +0530)
+                        # Defining timezone (IST)
                         local_tz = pytz.timezone('Asia/Kolkata')
 
                         # Parsing the publish date or use current time for immediate publishing
