@@ -40,7 +40,7 @@ def schedule_new_blogs(stdout):
             publish_date = publish_date.astimezone(local_tz)
             now = datetime.now(local_tz)
 
-            # Debug: Log the dates
+            # Debugging: Log the dates
             stdout.write(f"Checking blog '{title}' (Record ID: {record_id})")
             stdout.write(f"Publish Date: {publish_date.strftime('%Y-%m-%d %I:%M%p %Z')}")
             stdout.write(f"Current Time: {now.strftime('%Y-%m-%d %I:%M%p %Z')}")
