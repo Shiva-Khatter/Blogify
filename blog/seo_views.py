@@ -182,12 +182,12 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         # Current time in the same timezone
                         now = datetime.now(local_tz)
 
-                        # Debug: Logging the dates
+                        # Debugging: Logging the dates
                         print(f"Action: {action}")
                         print(f"Publish Date (parsed): {publish_date}")
                         print(f"Current Time: {now}")
 
-                        # Debug: Logging the keyword before preparing the record
+                        # Debugging: Logging the keyword before preparing the record
                         print(f"Keyword before preparing record: '{keyword}'")
                         print(f"Session keyword: '{request.session.get('keyword', '')}'")
 
