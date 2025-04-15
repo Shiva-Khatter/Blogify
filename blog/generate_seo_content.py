@@ -277,7 +277,7 @@ def save_to_airtable(record):
 
         primary_keyword = record.get("Primary Keyword", "").strip().replace('"', '')
         if len(primary_keyword) > 50:
-            primary_keyword = primary_keyword[:50]  # Testing with a shorter length
+            primary_keyword = primary_keyword[:50]  #Testing witha shorter word length
         airtable_record = {
             "Title": record.get("Title", ""),
             "Content": record.get("Content", ""),
