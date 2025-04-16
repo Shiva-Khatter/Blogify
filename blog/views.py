@@ -10,7 +10,7 @@ from decouple import config
 from pyairtable import Table
 from datetime import datetime
 
-# Loading Airtable configuration
+# Loading the Airtable configuration
 AIRTABLE_API_KEY = config('AIRTABLE_API_KEY')
 AIRTABLE_BASE_ID = config('AIRTABLE_BASE_ID')
 AIRTABLE_TABLE_NAME = "Blog Posts"
@@ -128,7 +128,7 @@ class GenerateBlogView(LoginRequiredMixin, View):
             request.session['drafts'] = drafts
             request.session['topic'] = topic
             request.session['primary_keyword'] = primary_keyword
-            request.session['additional_keywords'] = additional_keywords
+            request.session['additional_keywords'] = additional_keywords 
             request.session['prompt_1'] = prompt_1
             request.session.modified = True
 
