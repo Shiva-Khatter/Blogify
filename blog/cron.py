@@ -40,7 +40,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
         'Content-Type': 'application/json'
     }
 
-    # Fetching the specific record if record_id is provided, otherwise fetch all scheduled records
+    # Fetching the specific record if record_id is provided, otherwise fetching all scheduled records
     if record_id:
         try:
             response = requests.get(f"{airtable_url}/{record_id}", headers=headers)
