@@ -24,7 +24,7 @@ def fetch_google_articles(primary_keyword, num_results=4, fetch_limit=10):
         'cx': cx,
         'q': primary_keyword,
         'num': fetch_limit,
-        'safe': 'active',  # for safe search to filter out spam/ads/fraudulent content
+        'safe': 'active',  # being used for safe search to filter out spam/ads/fraudulent content
     }
     try:
         response = requests.get(url, params=params)
