@@ -62,7 +62,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                     request.session['error'] = "Failed to generate blog content."
                 else:
                     draft = blog_content
-                    # Preparing record for Airtable (optional: save draft to Airtable)
+                    # Preparing records for Airtable (optional: can save content as draft onto Airtable)
                     record = {
                         "Title": draft['title'],
                         "Content": draft['body'],
