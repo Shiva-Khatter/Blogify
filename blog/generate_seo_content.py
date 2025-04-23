@@ -290,7 +290,7 @@ def save_to_airtable(record):
 
         print(f"Sending to Airtable: {airtable_record}")
 
-        # Trying with pyairtable
+        # Trying pyairtable
         table = Table(api_key, base_id, table_name)
         saved_record = table.create(airtable_record)
         print(f"Successfully saved blog post '{record.get('Title')}' to Airtable. Record ID: {saved_record['id']}")
