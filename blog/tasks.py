@@ -19,7 +19,7 @@ def process_scheduled_posts():
     )
     for sp in scheduled_posts:
         logger.info(f"Processing scheduled post: {sp.topic}")
-        # Generate content directly
+        # Generating content directly
         prompt = (
             f"Write a 500-word blog post on '{sp.topic}'. Ensure the article uses the primary keyword '{sp.primary_keyword}' "
             f"5-10 times (1-2% density) for SEO. Include additional keywords '{sp.additional_keywords}' naturally."
