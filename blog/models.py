@@ -21,7 +21,7 @@ class Post(models.Model):
 class ScheduledPost(models.Model):
     topic = models.CharField(max_length=200)
     primary_keyword = models.CharField(max_length=100)
-    additional_keywords = models.CharField(max_length=500)  # Additional Keywords will be comma-seperated
+    additional_keywords = models.CharField(max_length=500)  # Additional Keywords are comma separated 
     scheduled_datetime = models.DateTimeField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
