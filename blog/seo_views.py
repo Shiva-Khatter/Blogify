@@ -9,7 +9,7 @@ import requests
 from datetime import datetime
 import pytz  # For timezone handling
 
-# Configiring Gemini API
+# Configuring Gemini API
 genai.configure(api_key=config('GEMINI_API_KEY'))
 
 class SEOBlogGeneratorView(LoginRequiredMixin, View):
