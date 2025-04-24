@@ -156,7 +156,7 @@ def publish_scheduled_blogs(record_id=None, immediate=False):
             print(f"WordPress response: {e.response.text if e.response else 'No response'}")
             continue
 
-        # Updating Airtable with Status and WP Post ID
+        # Updatin Airtable with Status and WP Post ID
         new_status = "Published"  # Using "Published" for both immediate and scheduled posts
         update_data = {
             'fields': {
