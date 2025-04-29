@@ -72,7 +72,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         "Created At": datetime.now().isoformat()
                     }
                     print("Record being sent to Airtable (generate):", record)  # Debug
-                    # save_to_airtable(record)
+                    # saving record to airtable
                     request.session['seo_draft'] = draft
                     request.session['grammar_result'] = ''
                     print("Draft after generation:", draft)
