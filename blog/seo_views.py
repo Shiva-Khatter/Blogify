@@ -68,7 +68,7 @@ class SEOBlogGeneratorView(LoginRequiredMixin, View):
                         "Content": draft['body'],
                         "SEO Summary": draft.get('meta_description', ''),
                         "Primary Keyword": keyword,
-                        "Status": "Draft",  # Set as Draft since this is the initial generation
+                        "Status": "Draft",  # Setting as Draft since this is the initial generation
                         "Created At": datetime.now().isoformat()
                     }
                     print("Record being sent to Airtable (generate):", record)  # Debug
