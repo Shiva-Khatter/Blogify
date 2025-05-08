@@ -5,6 +5,7 @@ Blogify is a Django-based application designed to automate the process of schedu
 
 ## Features
 
+
 ### Django Backend Core
 - **Cron Job Scheduling**: A custom management command (`start_scheduler`) uses `django-apscheduler` to run a cron job that checks Airtable for scheduled posts every minute.
 - **Airtable Integration**: Fetches blog posts from Airtable based on their status (e.g., "Scheduled") and publish date.
