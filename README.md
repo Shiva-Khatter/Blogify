@@ -24,6 +24,7 @@ Blogify is a Django-based application designed to automate the process of schedu
 
 ## Tech Stack
 
+
 ### Backend
 - **Django 5.1.1 (Python 3.12)**: Web framework for building the application and management commands.
 - **Models**: Uses Django’s ORM for database interactions (e.g., `apscheduler` tables).
