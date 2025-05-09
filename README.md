@@ -39,7 +39,6 @@ Blogify is a Django-based application designed to automate the process of schedu
   - `django-apscheduler`: For scheduling the cron job.
   - `airtable-python-wrapper`: For interacting with the Airtable API.
 
-  
 
 ### Database
 - **SQLite**: Django’s default database, used for storing scheduler data.
